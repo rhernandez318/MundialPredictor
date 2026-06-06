@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Mundial 2026 - Simulador Avanzado: Marcadores, Tablas y Eliminatorias</title>
+    <title>Mundial 2026 - Eliminatorias Automáticas (R32 → Final)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,40 +12,40 @@
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: #eef2f5;
-            color: #1e2f3a;
+            font-family: 'Segoe UI', system-ui, Roboto, sans-serif;
+            background: #eef2f7;
+            color: #1a2e3b;
             padding: 20px;
         }
 
         .container {
-            max-width: 1500px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
         .header {
-            background: linear-gradient(135deg, #0b2f40, #0a5c7e);
+            background: linear-gradient(135deg, #0b3b2f, #0c5f6e);
             color: white;
             padding: 24px 28px;
-            border-radius: 32px;
+            border-radius: 36px;
             margin-bottom: 28px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
         .header h1 {
-            font-size: 1.9rem;
+            font-size: 1.8rem;
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
         }
 
         .badge {
-            background: #f5b642;
-            color: #1e3b48;
-            padding: 4px 14px;
+            background: #f3b33d;
+            color: #1e3b2c;
+            padding: 5px 16px;
             border-radius: 60px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: bold;
         }
 
@@ -53,27 +53,25 @@
             display: flex;
             gap: 12px;
             margin-bottom: 28px;
-            flex-wrap: wrap;
-            border-bottom: 2px solid #cbdbe0;
+            border-bottom: 2px solid #c9dae2;
             padding-bottom: 8px;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            padding: 10px 32px;
+            padding: 10px 28px;
             font-weight: 700;
             border-radius: 40px;
             cursor: pointer;
-            transition: 0.2s;
-            color: #2c6079;
             font-size: 1rem;
+            color: #1e6b5e;
         }
 
         .tab-btn.active {
-            background: #0f5e7f;
+            background: #1a6b5c;
             color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .tab-pane {
@@ -83,14 +81,15 @@
         .active-pane {
             display: block;
         }
+
         @keyframes fade {
-            from { opacity: 0; transform: translateY(6px);}
-            to { opacity: 1; transform: translateY(0);}
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .groups-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 24px;
         }
 
@@ -98,22 +97,21 @@
             background: white;
             border-radius: 32px;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            transition: 0.1s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
         .group-title {
-            background: #1e6a50;
+            background: #1d7a5e;
             color: white;
             padding: 14px 20px;
             font-weight: bold;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
         }
 
         .standings-table {
             padding: 12px 16px;
-            background: #fafcfd;
-            border-bottom: 1px solid #e2ecf0;
+            background: #fafdfe;
+            border-bottom: 1px solid #dee9ef;
         }
 
         .standings-table table {
@@ -126,18 +124,18 @@
             padding: 6px 4px;
             text-align: left;
         }
+
         .standings-table th {
-            color: #2c6b4f;
-            border-bottom: 1px solid #cde2e8;
+            color: #1f6e55;
+            border-bottom: 1px solid #cfe2ea;
         }
 
         .match-item {
-            margin: 12px 12px 16px 12px;
-            background: #f9fcfe;
+            margin: 12px;
+            background: #f8fbfd;
             padding: 12px;
             border-radius: 24px;
-            border-left: 6px solid #f1b04a;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-left: 6px solid #f3b33d;
         }
 
         .match-date {
@@ -150,52 +148,45 @@
         .match-teams {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            gap: 8px;
             font-weight: 600;
-            flex-wrap: wrap;
-        }
-        .team-name {
-            flex: 2;
-            font-size: 0.9rem;
+            margin-bottom: 12px;
         }
 
         .score-inputs {
             display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-top: 12px;
+            gap: 16px;
             justify-content: space-between;
             flex-wrap: wrap;
         }
+
         .score-box {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: #eef3f7;
+            background: #eef3f0;
             padding: 4px 12px;
             border-radius: 60px;
         }
+
         .score-box input {
             width: 55px;
             padding: 6px;
-            border-radius: 30px;
-            border: 1px solid #bdd4de;
+            border-radius: 40px;
+            border: 1px solid #c2d6df;
             text-align: center;
             font-weight: bold;
-            font-size: 1rem;
         }
+
         .clear-score {
-            background: #eceff3;
+            background: #e2e8ed;
             border: none;
             border-radius: 30px;
-            padding: 4px 12px;
+            padding: 4px 14px;
             cursor: pointer;
-            font-size: 0.7rem;
         }
 
         .reset-btn {
-            background: #2f5e74;
+            background: #2c5a4c;
             color: white;
             border: none;
             padding: 12px 28px;
@@ -203,70 +194,70 @@
             font-weight: bold;
             margin-top: 20px;
             cursor: pointer;
-            font-size: 1rem;
         }
 
         .bracket-container {
             overflow-x: auto;
-            background: #fff6ea;
+            background: #fff5e8;
             border-radius: 32px;
-            padding: 20px 12px;
+            padding: 20px;
         }
         .bracket {
             display: flex;
             gap: 20px;
-            min-width: 1100px;
+            min-width: 1200px;
         }
         .round-col {
             flex: 1;
-            background: #fff3e0;
+            background: #fffaee;
             border-radius: 24px;
             padding: 12px;
         }
         .round-col h3 {
-            background: #c94f2c;
+            background: #c9512c;
             text-align: center;
             color: white;
             border-radius: 60px;
-            padding: 6px;
-            font-size: 0.9rem;
+            padding: 8px;
+            font-size: 0.85rem;
         }
         .ko-match {
             background: white;
             border-radius: 20px;
             padding: 12px;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        .ko-teams {
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
+            margin-bottom: 15px;
         }
         .ko-select {
-            margin-top: 10px;
             width: 100%;
-            padding: 6px;
+            margin-top: 8px;
+            padding: 8px;
             border-radius: 40px;
             border: 1px solid #f0a34b;
-            font-weight: 500;
         }
         .winner-crown {
-            background: #ffdd99;
-            padding: 16px;
-            margin-top: 25px;
-            border-radius: 50px;
+            background: #ffe1a0;
             text-align: center;
+            padding: 16px;
+            border-radius: 60px;
             font-weight: bold;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
+            margin-top: 25px;
+        }
+        .auto-info {
+            background: #d9eef5;
+            padding: 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            text-align: center;
+            margin-bottom: 12px;
         }
         footer {
-            margin-top: 35px;
             text-align: center;
             font-size: 0.7rem;
-            color: #5c7988;
+            margin-top: 30px;
+            color: #4c6a78;
         }
-        @media (max-width: 720px) {
+        @media (max-width: 760px) {
             .groups-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -274,33 +265,34 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>⚽ Mundial 2026 · Predictor Total <span class="badge">48 equipos | Marcadores + DIF</span></h1>
-        <p>Ingresa resultados (goles) en cada partido de grupos → tabla automática con puntos y diferencia de gol. En eliminatorias elige el ganador de cada llave. ¡Simula tu campeón!</p>
+        <h1>🏆 Mundial 2026 · Formato real + Eliminatorias automáticas <span class="badge">12 grupos · 8 mejores terceros · R32 manual · R16 a Final automático</span></h1>
+        <p>⚽ Define los resultados en grupos → Se calculan clasificados. En R32 elige los ganadores → El resto de rondas se actualizan solas.</p>
     </div>
 
     <div class="tabs">
         <button class="tab-btn active" data-tab="groups">📊 Fase de Grupos (Marcadores)</button>
-        <button class="tab-btn" data-tab="knockout">🏆 Eliminatorias (R32 → Final)</button>
+        <button class="tab-btn" data-tab="knockout">🏆 Eliminatorias (Solo elige R32, el resto automático)</button>
     </div>
 
     <div id="groupsPanel" class="tab-pane active-pane">
         <div class="groups-grid" id="groupsContainer"></div>
-        <div style="text-align: center; margin: 30px 0 20px;">
-            <button id="globalResetBtn" class="reset-btn">🔄 REINICIAR TODO (Grupos + Eliminatorias)</button>
+        <div style="text-align: center; margin: 25px 0;">
+            <button id="globalResetBtn" class="reset-btn">🔄 REINICIAR TODO</button>
         </div>
     </div>
 
     <div id="knockoutPanel" class="tab-pane">
+        <div class="auto-info">⚡ Los partidos desde R16 hasta la FINAL se generan automáticamente según los ganadores de R32. Solo elige quién gana cada octavo de final.</div>
         <div class="bracket-container">
             <div id="bracketView" class="bracket"></div>
         </div>
         <div id="championDisplay" class="winner-crown">🏆 CAMPEÓN MUNDIAL 2026: ---</div>
     </div>
-    <footer>⚡ Los empates en grupos se definen con marcador exacto. Tabla: Pts, DG (goles a favor - en contra). Los ganadores de grupo pasan a R32 (mejores primeros + segundos según regla oficial simplificada).</footer>
+    <footer>✅ Clasificación: 1º y 2º de cada grupo + 8 mejores terceros (puntos → DG → GF). Eliminatoria automática desde R16.</footer>
 </div>
 
 <script>
-    // ---------- DATOS OFICIALES GRUPOS MUNDIAL 2026 ----------
+    // ======================== 12 GRUPOS ========================
     const groupsData = {
         A: { name: "Grupo A", teams: ["México", "Sudáfrica", "Corea del Sur", "República Checa"] },
         B: { name: "Grupo B", teams: ["Canadá", "Bosnia", "Catar", "Suiza"] },
@@ -316,13 +308,10 @@
         L: { name: "Grupo L", teams: ["Inglaterra", "Croacia", "Ghana", "Panamá"] }
     };
 
-    // Lista de partidos de grupos (todos los 72 encuentros, simplificados pero completos)
-    const groupMatches = [];
-    const groupLetters = Object.keys(groupsData);
-    // Generar partidos para cada grupo: rondas ida y vuelta? Solo fase grupos cada equipo juega 3 partidos (6 por grupo)
-    for(let grp of groupLetters) {
+    // Generar partidos de fase grupos
+    let groupMatches = [];
+    for(let grp of Object.keys(groupsData)) {
         const teams = groupsData[grp].teams;
-        // fixture round robin: cada par único (3 jornadas)
         const fixtures = [
             { home: teams[0], away: teams[1] }, { home: teams[2], away: teams[3] },
             { home: teams[0], away: teams[2] }, { home: teams[1], away: teams[3] },
@@ -340,162 +329,245 @@
         });
     }
 
-    // ---- ESTADO: Resultados (homeScore, awayScore) ----
-    let matchResults = {}; // { matchId: { home: int, away: int } }
+    // Estado
+    let matchResults = {};      // { matchId: { home, away } }
+    let r32Winners = {};        // solo guardamos los ganadores de R32 (octavos)
 
-    // Estado eliminatorias (ganadores seleccionados manualmente)
-    let koWinners = {}; // key: matchId => teamName
+    // Persistencia
+    function loadAll() {
+        const savedRes = localStorage.getItem("WC2026_groupResults");
+        if(savedRes) matchResults = JSON.parse(savedRes);
+        const savedR32 = localStorage.getItem("WC2026_r32winners");
+        if(savedR32) r32Winners = JSON.parse(savedR32);
+    }
+    function saveGroupResults() { localStorage.setItem("WC2026_groupResults", JSON.stringify(matchResults)); }
+    function saveR32Winners() { localStorage.setItem("WC2026_r32winners", JSON.stringify(r32Winners)); }
 
-    // Cargar / Guardar LocalStorage
-    function loadAllData() {
-        const storedResults = localStorage.getItem("WC2026_groupResults");
-        if(storedResults) matchResults = JSON.parse(storedResults);
-        const storedKO = localStorage.getItem("WC2026_koWinners");
-        if(storedKO) koWinners = JSON.parse(storedKO);
-    }
-    function saveGroupResults() {
-        localStorage.setItem("WC2026_groupResults", JSON.stringify(matchResults));
-    }
-    function saveKOWinners() {
-        localStorage.setItem("WC2026_koWinners", JSON.stringify(koWinners));
-    }
-
-    // Calcular tabla de posiciones para un grupo
+    // ---------- Tabla de grupos ----------
     function computeGroupStandings(groupLetter) {
         const teams = groupsData[groupLetter].teams;
         let stats = {};
-        teams.forEach(t => {
-            stats[t] = { pts: 0, gf: 0, ga: 0, diff: 0 };
-        });
+        teams.forEach(t => { stats[t] = { pts: 0, gf: 0, ga: 0, diff: 0 }; });
         const matches = groupMatches.filter(m => m.group === groupLetter);
         matches.forEach(m => {
             const res = matchResults[m.id];
             if(res && res.home !== undefined && res.away !== undefined) {
-                const homeG = res.home;
-                const awayG = res.away;
-                stats[m.home].gf += homeG;
-                stats[m.home].ga += awayG;
-                stats[m.away].gf += awayG;
-                stats[m.away].ga += homeG;
-                if(homeG > awayG) {
-                    stats[m.home].pts += 3;
-                } else if(awayG > homeG) {
-                    stats[m.away].pts += 3;
-                } else {
-                    stats[m.home].pts += 1;
-                    stats[m.away].pts += 1;
-                }
+                const hg = res.home, ag = res.away;
+                stats[m.home].gf += hg;
+                stats[m.home].ga += ag;
+                stats[m.away].gf += ag;
+                stats[m.away].ga += hg;
+                if(hg > ag) stats[m.home].pts += 3;
+                else if(ag > hg) stats[m.away].pts += 3;
+                else { stats[m.home].pts += 1; stats[m.away].pts += 1; }
             }
         });
-        for(let t of teams) {
-            stats[t].diff = stats[t].gf - stats[t].ga;
-        }
-        let sorted = [...teams].sort((a,b) => {
+        for(let t of teams) stats[t].diff = stats[t].gf - stats[t].ga;
+        const sorted = [...teams].sort((a,b) => {
             if(stats[a].pts !== stats[b].pts) return stats[b].pts - stats[a].pts;
             if(stats[a].diff !== stats[b].diff) return stats[b].diff - stats[a].diff;
             return stats[b].gf - stats[a].gf;
         });
-        return { standings: sorted.map(t => ({team: t, ...stats[t]})), first: sorted[0], second: sorted[1] };
+        return { standings: sorted.map(t => ({team: t, ...stats[t]})), first: sorted[0], second: sorted[1], third: sorted[2] };
     }
 
-    // Obtener los 32 clasificados para eliminatorias: primeros de cada grupo + mejores segundos (regla: todos los segundos ordenados, tomamos 20? pero solo 32 equipos: 12 grupos dan 12 primeros + 12 segundos = 24, todavía faltan 8? En mundial 2026 pasan 8 mejores terceros; pero para hacerlo divertido y jugable, usaremos: 12 primeros + 12 segundos = 24 + 8 mejores terceros de la tabla general? mejor simplificamos: para el bracket interactivo generamos 32 equipos con los 12 primeros y luego completamos con los mejores segundos (top 16 entre los segundos) pero hay 12 segundos, no alcanza. Usaremos: pasan los 12 primeros + 12 segundos = 24. Luego los 8 equipos restantes se toman de los mejores terceros computados por diferencia. Así se siente realista.
-    function getAllRanked() {
+    // Obtener 32 clasificados (1ros, 2dos, 8 mejores terceros)
+    function getQualifiedTeams() {
         let allTeams = [];
-        for(let grp of groupLetters) {
-            const { standings } = computeGroupStandings(grp);
-            standings.forEach((s, idx) => {
-                allTeams.push({ team: s.team, group: grp, position: idx+1, pts: s.pts, diff: s.diff, gf: s.gf });
-            });
+        for(let grp of Object.keys(groupsData)) {
+            const { standings, first, second, third } = computeGroupStandings(grp);
+            const firstTeam = standings.find(s => s.team === first);
+            const secondTeam = standings.find(s => s.team === second);
+            const thirdTeam = standings.find(s => s.team === third);
+            if(firstTeam) allTeams.push({ ...firstTeam, group: grp, pos: 1 });
+            if(secondTeam) allTeams.push({ ...secondTeam, group: grp, pos: 2 });
+            if(thirdTeam) allTeams.push({ ...thirdTeam, group: grp, pos: 3 });
         }
-        // separar primeros, segundos, terceros, cuartos
-        let firsts = allTeams.filter(t => t.position === 1);
-        let seconds = allTeams.filter(t => t.position === 2);
-        let thirds = allTeams.filter(t => t.position === 3);
-        // ordenar terceros por puntos/diff
-        thirds.sort((a,b) => b.pts - a.pts || b.diff - a.diff);
-        let qualified = [...firsts, ...seconds];
-        let needed = 32 - qualified.length;
-        let bestThirds = thirds.slice(0, needed);
-        qualified.push(...bestThirds);
+        const firstAndSecond = allTeams.filter(t => t.pos === 1 || t.pos === 2);
+        let thirds = allTeams.filter(t => t.pos === 3);
+        thirds.sort((a,b) => {
+            if(a.pts !== b.pts) return b.pts - a.pts;
+            if(a.diff !== b.diff) return b.diff - a.diff;
+            return b.gf - a.gf;
+        });
+        const bestThirds = thirds.slice(0, 8);
+        const qualified = [...firstAndSecond, ...bestThirds];
         return qualified.map(t => t.team);
     }
 
-    // Construcción de rondas eliminatorias (R32, R16, QF, SF, Final) según los 32 clasificados
-    function buildKnockoutTree() {
-        let qualifiedTeams = getAllRanked();
-        while(qualifiedTeams.length < 32) qualifiedTeams.push("Equipo Misterioso");
-        // Mezcla equilibrada: 1º vs 32º etc
-        let sorted = [...qualifiedTeams];
-        let r32matches = [];
+    // ========== LÓGICA DE ELIMINATORIAS AUTOMÁTICAS ==========
+    function buildAutomaticBracket() {
+        const qualified = getQualifiedTeams();
+        while(qualified.length < 32) qualified.push("Equipo ?");
+        
+        // Orden para R32 (1° vs 32° estilo mundial)
+        const ordered = [...qualified];
+        let r32Matches = [];
         for(let i=0; i<16; i++) {
-            let home = sorted[i];
-            let away = sorted[31-i];
-            r32matches.push({
+            const home = ordered[i];
+            const away = ordered[31-i];
+            const winner = r32Winners[`R32_${i}`] || null;
+            r32Matches.push({
                 id: `R32_${i}`,
-                home: home,
-                away: away,
-                winner: koWinners[`R32_${i}`] || null,
-                round: "R32"
+                home, away,
+                winner: winner
             });
         }
-        // R16, QF, SF, Final se generan dinámicamente pero permitimos selección directa
-        let r16matches = [];
-        for(let i=0;i<8;i++) r16matches.push({ id: `R16_${i}`, home: null, away: null, winner: koWinners[`R16_${i}`] || null, round: "R16" });
-        let qfmatches = [];
-        for(let i=0;i<4;i++) qfmatches.push({ id: `QF_${i}`, home: null, away: null, winner: koWinners[`QF_${i}`] || null, round: "QF" });
-        let sfmatches = [];
-        for(let i=0;i<2;i++) sfmatches.push({ id: `SF_${i}`, home: null, away: null, winner: koWinners[`SF_${i}`] || null, round: "SF" });
-        let finalMatch = { id: "FINAL", home: null, away: null, winner: koWinners["FINAL"] || null, round: "FINAL" };
-        return { r32: r32matches, r16: r16matches, qf: qfmatches, sf: sfmatches, final: finalMatch };
+
+        // Función para propagar ganadores
+        function getWinnerR32(index) {
+            const match = r32Matches[index];
+            return match.winner ? match.winner : null;
+        }
+
+        // R16 (8 partidos)
+        let r16Matches = [];
+        for(let i=0; i<8; i++) {
+            const leftIdx = i*2;
+            const rightIdx = i*2+1;
+            const winnerLeft = getWinnerR32(leftIdx);
+            const winnerRight = getWinnerR32(rightIdx);
+            let winner = null;
+            if(winnerLeft && winnerRight) {
+                // simulamos automático: aquí podrías poner lógica extra, pero para simulación rápida:
+                // lo dejamos pendiente hasta que ambos tengan ganador. Para mostrar, creamos el cruce.
+            }
+            r16Matches.push({
+                id: `R16_${i}`,
+                home: winnerLeft,
+                away: winnerRight,
+                winner: null  // más abajo se calculará automáticamente si ambos existen
+            });
+        }
+
+        // Automatizar ganadores de R16 (para que no sean manuales)
+        // Regla simple: gana el que tenga más "fuerza"? Para demo, elegimos al primero si existe o dejamos null.
+        // Pero como el usuario no elige aquí, debemos definir automáticamente. Para que sea predecible: gana el que esté primero en el orden de la lista (home).
+        r16Matches = r16Matches.map(m => {
+            if(m.home && m.away) {
+                // Simulación automática (puedes cambiar la lógica: el que tenga mejor ranking? Por ahora el home)
+                // Para que sea más interesante, lo dejamos automático pero el usuario puede influir solo en R32.
+                let winner = m.home;  // automático: gana el home (o podrías random pero no es serio)
+                // Mostramos que es automático
+                return { ...m, winner };
+            }
+            return { ...m, winner: null };
+        });
+
+        // Cuartos (4)
+        let qfMatches = [];
+        for(let i=0; i<4; i++) {
+            const left = r16Matches[i*2];
+            const right = r16Matches[i*2+1];
+            let winner = null;
+            if(left.winner && right.winner) winner = left.winner; // automático
+            qfMatches.push({ id: `QF_${i}`, home: left?.winner, away: right?.winner, winner });
+        }
+        // Semis
+        let sfMatches = [];
+        for(let i=0; i<2; i++) {
+            const left = qfMatches[i*2];
+            const right = qfMatches[i*2+1];
+            let winner = null;
+            if(left?.winner && right?.winner) winner = left.winner;
+            sfMatches.push({ id: `SF_${i}`, home: left?.winner, away: right?.winner, winner });
+        }
+        // Final
+        let finalMatch = { id: "FINAL", home: sfMatches[0]?.winner, away: sfMatches[1]?.winner, winner: null };
+        if(sfMatches[0]?.winner && sfMatches[1]?.winner) finalMatch.winner = sfMatches[0].winner;
+
+        return { r32Matches, r16Matches, qfMatches, sfMatches, finalMatch };
     }
 
-    // RENDER FASE GRUPOS (con inputs de goles y tabla)
+    // Render eliminatorias con solo R32 editable
+    function renderBracket() {
+        const bracketDiv = document.getElementById("bracketView");
+        if(!bracketDiv) return;
+        const bracket = buildAutomaticBracket();
+        
+        let html = `<div class="round-col"><h3>R32 (elige ganador)</h3>`;
+        bracket.r32Matches.forEach(m => {
+            html += `<div class="ko-match">
+                        <strong>${m.home}</strong>  vs  <strong>${m.away}</strong>
+                        <select class="r32-select" data-idx="${m.id.split('_')[1]}">
+                            <option value="">-- Elegir ganador --</option>
+                            <option value="${m.home}" ${m.winner === m.home ? 'selected' : ''}>${m.home}</option>
+                            <option value="${m.away}" ${m.winner === m.away ? 'selected' : ''}>${m.away}</option>
+                        </select>
+                    </div>`;
+        });
+        html += `</div><div class="round-col"><h3>R16 (automático)</h3>`;
+        bracket.r16Matches.forEach(m => {
+            html += `<div class="ko-match">🏆 ${m.home || "---"}  🆚  ${m.away || "---"}<br><span style="font-size:0.7rem;">✅ Gana: ${m.winner || "pendiente"}</span></div>`;
+        });
+        html += `</div><div class="round-col"><h3>Cuartos (auto)</h3>`;
+        bracket.qfMatches.forEach(m => {
+            html += `<div class="ko-match">🎯 ${m.home || "---"}  vs  ${m.away || "---"}<br>⚡ Avanza: ${m.winner || "---"}</div>`;
+        });
+        html += `</div><div class="round-col"><h3>Semifinales</h3>`;
+        bracket.sfMatches.forEach(m => {
+            html += `<div class="ko-match">🥇 ${m.home || "---"}  🆚  ${m.away || "---"}<br>🏁 Finalista: ${m.winner || "---"}</div>`;
+        });
+        html += `</div><div class="round-col"><h3>🏆 FINAL</h3>`;
+        html += `<div class="ko-match">🏆 ${bracket.finalMatch.home || "---"}  vs  ${bracket.finalMatch.away || "---"}<br><strong>CAMPEÓN: ${bracket.finalMatch.winner || "---"}</strong></div>`;
+        html += `</div>`;
+        bracketDiv.innerHTML = html;
+
+        // Eventos solo para R32
+        document.querySelectorAll('.r32-select').forEach(sel => {
+            sel.addEventListener('change', (e) => {
+                const idx = sel.getAttribute('data-idx');
+                const winner = sel.value;
+                if(winner) r32Winners[`R32_${idx}`] = winner;
+                else delete r32Winners[`R32_${idx}`];
+                saveR32Winners();
+                renderBracket();
+                updateChampionDisplay();
+            });
+        });
+        updateChampionDisplay(bracket);
+    }
+
+    function updateChampionDisplay(bracket = null) {
+        if(!bracket) bracket = buildAutomaticBracket();
+        const champ = bracket.finalMatch.winner;
+        document.getElementById("championDisplay").innerHTML = champ ? `🏆 CAMPEÓN MUNDIAL 2026: ${champ} 🏆` : `🏆 CAMPEÓN: define ganadores en R32`;
+    }
+
+    // Render grupos (igual que antes)
     function renderGroups() {
         const container = document.getElementById("groupsContainer");
         if(!container) return;
         let html = '';
-        for(let grp of groupLetters) {
+        for(let grp of Object.keys(groupsData)) {
             const { standings, first, second } = computeGroupStandings(grp);
             const matchesHere = groupMatches.filter(m => m.group === grp);
-            html += `<div class="group-card"><div class="group-title">📌 ${groupsData[grp].name}</div>`;
-            // tabla de posiciones
-            html += `<div class="standings-table"><table><thead><tr><th>Equipo</th><th>Pts</th><th>GF</th><th>GC</th><th>DIF</th></tr></thead><tbody>`;
-            standings.forEach(stat => {
-                html += `<tr><td><b>${stat.team}</b></td><td>${stat.pts}</td><td>${stat.gf}</td><td>${stat.ga}</td><td>${stat.diff}</td></tr>`;
+            html += `<div class="group-card"><div class="group-title">📌 ${groupsData[grp].name}</div>
+                        <div class="standings-table"><table><thead><tr><th>Equipo</th><th>Pts</th><th>GF</th><th>GC</th><th>DIF</th></tr></thead><tbody>`;
+            standings.forEach(s => {
+                html += `<tr><td><b>${s.team}</b></td><td>${s.pts}</td><td>${s.gf}</td><td>${s.ga}</td><td>${s.diff}</td></tr>`;
             });
-            html += `</tbody></table><div style="font-size:0.7rem; margin-top:6px;">🏆 1º: ${first} &nbsp;&nbsp; ⭐ 2º: ${second}</div></div>`;
-            // partidos con marcadores
-            matchesHere.forEach(match => {
-                const result = matchResults[match.id] || { home: '', away: '' };
-                html += `<div class="match-item">
-                            <div class="match-date">📅 ${match.date}</div>
-                            <div class="match-teams">
-                                <span class="team-name">${match.home}</span>
-                                <span>🆚</span>
-                                <span class="team-name">${match.away}</span>
-                            </div>
-                            <div class="score-inputs">
-                                <div class="score-box">🏠 <input type="number" class="score-home" data-match="${match.id}" data-team="home" value="${result.home !== '' ? result.home : ''}" placeholder="0"></div>
-                                <div class="score-box">✈️ <input type="number" class="score-away" data-match="${match.id}" data-team="away" value="${result.away !== '' ? result.away : ''}" placeholder="0"></div>
-                                <button class="clear-score" data-match="${match.id}">Limpiar</button>
-                            </div>
-                         </div>`;
+            html += `</tbody></table><div>🏆 1º: ${first} | ⭐ 2º: ${second}</div></div>`;
+            matchesHere.forEach(m => {
+                const res = matchResults[m.id] || { home: '', away: '' };
+                html += `<div class="match-item"><div class="match-date">📅 ${m.date}</div><div>${m.home}  🆚  ${m.away}</div>
+                        <div class="score-inputs"><div class="score-box">🏠 <input type="number" class="score-home" data-match="${m.id}" value="${res.home !== '' ? res.home : ''}"></div>
+                        <div class="score-box">✈️ <input type="number" class="score-away" data-match="${m.id}" value="${res.away !== '' ? res.away : ''}"></div>
+                        <button class="clear-score" data-match="${m.id}">Limpiar</button></div></div>`;
             });
             html += `</div>`;
         }
         container.innerHTML = html;
 
-        // eventos inputs goles
         document.querySelectorAll('.score-home, .score-away').forEach(inp => {
             inp.addEventListener('change', (e) => {
                 const matchId = inp.getAttribute('data-match');
-                const current = matchResults[matchId] || { home: 0, away: 0 };
                 const homeVal = parseInt(document.querySelector(`.score-home[data-match="${matchId}"]`).value) || 0;
                 const awayVal = parseInt(document.querySelector(`.score-away[data-match="${matchId}"]`).value) || 0;
                 matchResults[matchId] = { home: homeVal, away: awayVal };
                 saveGroupResults();
-                renderGroups();      // refrescar tabla y colores
-                renderBracket();    // actualizar bracket porque clasificados cambian
+                renderGroups();
+                renderBracket();
             });
         });
         document.querySelectorAll('.clear-score').forEach(btn => {
@@ -509,89 +581,16 @@
         });
     }
 
-    // RENDER BRACKET con selects dinámicos y ganadores.
-    function renderBracket() {
-        const bracketDiv = document.getElementById("bracketView");
-        if(!bracketDiv) return;
-        const tree = buildKnockoutTree();
-        // Mostrar todas las rondas
-        let html = `<div class="round-col"><h3>Ronda de 32</h3>`;
-        tree.r32.forEach(m => {
-            const selected = m.winner || "";
-            html += `<div class="ko-match"><div class="ko-teams"><span>${m.home}</span> vs <span>${m.away}</span></div>
-                    <select class="ko-select" data-id="${m.id}" data-round="r32"><option value="">-- Elegir ganador --</option>
-                    <option value="${m.home}" ${selected===m.home ? 'selected':''}>${m.home}</option>
-                    <option value="${m.away}" ${selected===m.away ? 'selected':''}>${m.away}</option></select></div>`;
-        });
-        html += `</div><div class="round-col"><h3>Octavos (R16)</h3>`;
-        tree.r16.forEach(m => {
-            const selected = m.winner || "";
-            html += `<div class="ko-match"><div class="ko-teams">🏆 <span>Ganador llave previa</span> 🆚 <span>Ganador llave previa</span></div>
-                    <select class="ko-select" data-id="${m.id}" data-round="r16"><option value="">-- Elige campeón de este octavo --</option>
-                    <option value="Clasificado A" ${selected==="Clasificado A"?'selected':''}>Clasificado A</option>
-                    <option value="Clasificado B" ${selected==="Clasificado B"?'selected':''}>Clasificado B</option>
-                    <option value="Clasificado C" ${selected==="Clasificado C"?'selected':''}>Clasificado C</option>
-                    </select><div style="font-size:0.7rem;margin-top:5px;">💡 Selecciona manual el equipo que avanza</div></div>`;
-        });
-        html += `</div><div class="round-col"><h3>Cuartos</h3>`;
-        tree.qf.forEach(m => {
-            const selected = m.winner || "";
-            html += `<div class="ko-match"><select class="ko-select" data-id="${m.id}" data-round="qf"><option value="">-- Semifinalista --</option>
-            <option ${selected==="Cuartofinalista X"?"selected":""}>Cuartofinalista X</option>
-            <option ${selected==="Cuartofinalista Y"?"selected":""}>Cuartofinalista Y</option>
-            </select></div>`;
-        });
-        html += `</div><div class="round-col"><h3>Semifinales</h3>`;
-        tree.sf.forEach(m => {
-            const selected = m.winner || "";
-            html += `<div class="ko-match"><select class="ko-select" data-id="${m.id}" data-round="sf"><option value="">-- Finalista --</option>
-            <option ${selected==="Finalista 1"?"selected":""}>Finalista 1</option>
-            <option ${selected==="Finalista 2"?"selected":""}>Finalista 2</option>
-            </select></div>`;
-        });
-        html += `</div><div class="round-col"><h3>🏆 FINAL</h3>`;
-        const finalSel = tree.final.winner || "";
-        html += `<div class="ko-match"><select class="ko-select" data-id="FINAL" data-round="final"><option value="">-- CAMPEÓN MUNDIAL --</option>
-        <option ${finalSel==="Campeón A"?"selected":""}>Campeón A</option>
-        <option ${finalSel==="Campeón B"?"selected":""}>Campeón B</option>
-        </select></div>`;
-        html += `</div>`;
-        bracketDiv.innerHTML = html;
-
-        // Eventos para guardar ganadores de KO
-        document.querySelectorAll('.ko-select').forEach(sel => {
-            sel.addEventListener('change', (e) => {
-                const id = sel.getAttribute('data-id');
-                const value = sel.value;
-                if(value && value !== "") {
-                    koWinners[id] = value;
-                } else {
-                    delete koWinners[id];
-                }
-                saveKOWinners();
-                renderBracket();  // refrescar selección
-                updateChampionDisplay();
-            });
-        });
-        updateChampionDisplay();
-    }
-
-    function updateChampionDisplay() {
-        const champion = koWinners["FINAL"] || "No definido aún";
-        document.getElementById("championDisplay").innerHTML = champion !== "No definido aún" ? `🏆 CAMPEÓN MUNDIAL 2026: ${champion} 🏆` : `🏆 CAMPEÓN MUNDIAL 2026: --- (elige en la final) ---`;
-    }
-
-    // RESET TOTAL: grupos + eliminatorias
     function fullReset() {
         matchResults = {};
-        koWinners = {};
+        r32Winners = {};
         saveGroupResults();
-        saveKOWinners();
+        saveR32Winners();
         renderGroups();
         renderBracket();
     }
 
-    // TABS
+    // Tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -611,10 +610,8 @@
         });
     });
 
-    // Botón reset
     document.getElementById("globalResetBtn")?.addEventListener("click", fullReset);
-
-    loadAllData();
+    loadAll();
     renderGroups();
     renderBracket();
 </script>
